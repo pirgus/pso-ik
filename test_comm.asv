@@ -1,0 +1,9 @@
+rosinit('192.168.149.1'); % IP do ROS Master
+rostopic info /joint3_controller/command
+
+pub = rospublisher('/joint4_controller/command', 'std_msgs/Float64', 'DataFormat', 'struct');
+rostopic info /joint3_controller/command
+msg = rosmessage(pub);
+msg.Data = 0; % Valor fixo para teste
+send(pub, msg);
+rosshutdown;

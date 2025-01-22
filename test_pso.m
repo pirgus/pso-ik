@@ -1,0 +1,36 @@
+global goal robot
+
+test_dh = [0   pi/2 0.45 0;
+           0.98 0    0   0;
+           0.95 0    0   0;
+           0.35 pi/2 0   0];
+
+dh_alter = [0  pi/2 0.45 0;
+           0.98 0    0   0;
+           0.95 0    0   0;
+           0.35 pi/2 0   0];
+
+joints_limits = [(5/3)*pi, pi/2, pi/2, pi/2];
+goal = [1 1.5 1.5];
+robot = generate_robot(test_dh, 4, 4, joints_limits);
+config = homeConfiguration(robot);
+show(robot);    
+
+pso = PSO_R(50, 50, 0.78, 1, 1, joints_limits);
+
+pso = pso.init_particles;
+
+pso = pso.optm_process;
+
+result = pso.global_best{1};
+result(2) = pi/2 - result(2);
+result(1) = pi/2 - result(1);
+disp(result);
+% pso = pso.adjust_result([0, pi/2, 0, 0]);
+
+disp(['global best by the end of the process (angles, fitness) ==> ', ...
+    mat2str(pso.global_best{1}, 4), ', ', num2str(pso.global_best{2})]);
+
+end_effector_pos = forward_kinematics(pso.global_best{1}, robot, true);
+disp(['final position of end_effector ==> ', mat2str(end_effector_pos, 5)]);
+disp(['the goal was ==> ', mat2str(goal, 3)]);
