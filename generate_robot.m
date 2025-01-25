@@ -7,9 +7,9 @@ function robot = generate_robot(dh_params, n_bodies, n_joints, joint_limits)
         bodies{i} = rigidBody(['body', num2str(i)]);
         joints{i} = rigidBodyJoint(['jnt', num2str(i)], 'revolute');
         joints{i}.PositionLimits = [-joint_limits(i) joint_limits(i)];
-        if i == 2
-            joints{i}.HomePosition = pi/2;
-        end
+%         if i == 2
+%             joints{i}.HomePosition = pi/2;
+%         end
         setFixedTransform(joints{i}, dh_params(i,:), "dh");
         bodies{i}.Joint = joints{i};
         if i == 1 % add first body to base

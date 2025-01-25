@@ -1,10 +1,21 @@
 function fitness = particle_fitness(particle)
-    % Função para calcular o fitness, a distância do end-effector até o objetivo
-    global goal robot  % Acessa as variáveis globais
+    % function to calc the particle's fitness, the distance between the end
+    %-effector and the goal
+    global goal robot  % access global vars
 
-    % Calcula a posição do end-effector com base na posição das juntas (posição da partícula)
+    % calculates the position of the end-effector based on the joints
+    % positions
     end_effector_pos = forward_kinematics(particle.position, robot, false);
+
+    joint2_real_value = -(pi/2) + particle.position(2);
+    penalty = 0;
+    if joint2_real_value < -(pi/2) || joint2_real_value > (pi/2)
+        % apply penalty when this angle is lesser than -90º or greater 90º
+        % since the joint cannot achieve this position 
+        penalty = abs(joint2_real_value - max(min(joint2_real_value, pi/2), -pi/2))* 100;
+    end
     
-    % Calcula o fitness como a norma (distância) entre o end-effector e o objetivo
-    fitness = norm(end_effector_pos - goal);
+    % calculates the fitness with the norm (distance) between the
+    % end-effector and the goal
+    fitness = norm(end_effector_pos - goal) + penalty;
 end

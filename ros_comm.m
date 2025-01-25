@@ -4,9 +4,9 @@ rosinit('192.168.149.1')
 % i inserted try/catch so that in case of any error it terminates the connection
 % anyway
 try
-    disp('listing nodes -------------------------------------');
-    rosnode list
-    disp('end of nodes list ---------------------------------');
+%     disp('listing nodes -------------------------------------');
+%     rosnode list
+%     disp('end of nodes list ---------------------------------');
 
 %     list the possible topics from the ros
     rostopic list
@@ -46,14 +46,17 @@ try
         msg = rosmessage(pub);
         msg_data = input('Insert value of the message\n');
         msg.Data = msg_data;
+%         joints_angles = [0 0 0 0];
+%         msg.Name = {'joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'r_joint'};
+%         msg.Position = joints_angles;
         send(pub, msg);
         pause(2)
         disp('command sent')
 % 
-        sub = rossubscriber('/joint_states', 'DataFormat', 'struct');
-        pause(1);
-        lastState = sub.LatestMessage.Position;
-        disp(lastState);
+%         sub = rossubscriber('/joint_states', 'DataFormat', 'struct');
+%         pause(1);
+%         lastState = sub.LatestMessage.Position;
+%         disp(lastState);
     end
 catch error
     disp('An error occurred')
