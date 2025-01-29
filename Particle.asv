@@ -18,9 +18,9 @@ classdef Particle
             particle.inertia_factor = inertia;
             particle.cog_factor = cognitive;
             particle.social_factor = social;
-            particle.fitness = update_f
+            particle = update_fitness(particle);
 
-            particle.own_best = {[0, 0, 0, 0], -inf};
+            particle.own_best = {, inf};
         end
 
         function particle = update_fitness(particle)
@@ -29,12 +29,11 @@ classdef Particle
 
         function particle = update_velocity(particle, global_best)
             % random cognitive and social factors
-            rand_cogn = particle.cog_factor * rand;
-            rand_social = particle.social_factor * rand;
-
+            r1 = rand;
+            r2 = rand;
             particle.velocity = particle.inertia_factor * particle.velocity + ...
-                rand_cogn * (particle.own_best - particle.position) + ...
-                rand_social * (global_best{1} - particle.position);
+                particle.cog_factor * r1 * (particle.own_best{1} - particle.position) + ...
+                particle.social_factor * r2 * (global_best{1} - particle.position);
         end
 
         function particle = update_position(particle)

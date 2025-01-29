@@ -5,7 +5,8 @@ function fitness = particle_fitness(particle)
 
     % calculates the position of the end-effector based on the joints
     % positions
-    end_effector_pos = forward_kinematics(particle.position, robot, false);
+    end_effector_name = strcat('body', num2str(length(particle.position)));
+    end_effector_pos = forwardKinematics(particle.position, robot, false, end_effector_name);
 
     joint2_real_value = -(pi/2) + particle.position(2);
     penalty = 0;
