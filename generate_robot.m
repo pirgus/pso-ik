@@ -6,7 +6,7 @@ function robot = generate_robot(dh_params, n_bodies, n_joints, joint_limits)
     for i = 1:n_bodies
         bodies{i} = rigidBody(['body', num2str(i)]);
         joints{i} = rigidBodyJoint(['jnt', num2str(i)], 'revolute');
-        joints{i}.PositionLimits = [-joint_limits(i) joint_limits(i)];
+        joints{i}.PositionLimits = [joint_limits(i, 1) joint_limits(i, 2)];
 %         if i == 2
 %             joints{i}.HomePosition = pi/2;
 %         end

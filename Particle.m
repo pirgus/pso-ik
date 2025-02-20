@@ -8,21 +8,25 @@ classdef Particle
         cog_factor;
         social_factor;
         fitness;
-        num_joints;
+        q_min;
+        q_max;
+        robot;
     end
 
     methods
         function particle = Particle(position, velocity, inertia, ...
-                cognitive, social, num_joints)
+                cognitive, social, q_min, q_max, robot)
             particle.position = position;
             particle.velocity = velocity;
             particle.inertia_factor = inertia;
             particle.cog_factor = cognitive;
             particle.social_factor = social;
-            particle.num_joints = num_joints;
+            particle.q_min = q_min;
+            particle.q_max = q_max;
             particle = updateFitness(particle);
+            particle.robot = robot;
 
-            particle.own_best = {zeros(1, particle.num_joints), inf};
+            particle.own_best = {zeros(1, length(particle.q_min)), inf};
         end
 
         function particle = updateFitness(particle)
@@ -40,6 +44,10 @@ classdef Particle
 
         function particle = updatePosition(particle)
             particle.position = particle.position + particle.velocity;
+            if any(particle.position > particle.q_max) || any(particle.position < particle.q_min)
+                particle.position = max(particle.q_min, min(particle.position, particle.q_max));
+%                   particle.position = generate_r_config(particle.robot);
+            end
         end
 
     end

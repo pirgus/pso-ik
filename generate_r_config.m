@@ -1,7 +1,8 @@
-function r_config = generate_r_config(joints_limits)
-    r_config = zeros(1, length(joints_limits));
-    for i = 1:length(joints_limits)
-%         rand * 2 - 1 -> returns a random value in the [-1, 1] interval
-        r_config(i) = joints_limits(i)*(rand*2-1);
+function r_config = generate_r_config(robot)
+    r_config = zeros(1, length(robot));
+    for i = 1:length(robot.Bodies)
+        joints_limits = robot.Bodies{i}.Joint.PositionLimits;
+        r_config(i) = joints_limits(1) + (joints_limits(2) - joints_limits(1)) * rand;
     end
+    
 end

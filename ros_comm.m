@@ -1,5 +1,5 @@
 % remotely connect to ros
-rosinit('192.168.149.1')
+rosinit('10.0.0.180')
 
 % i inserted try/catch so that in case of any error it terminates the connection
 % anyway

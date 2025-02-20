@@ -8,40 +8,42 @@ classdef PSO_R
         social_factor;
         particles;
         global_best;
-        joints_limits;
-        verbose;
+        robot;
+        q_min;
+        q_max;
+        tol;
     end
    
     methods
         function pso = PSO_R(num_particles, num_iterations, ...
-                inertia_factor, cog_factor, social_factor, joints_limits, verbose)
+                inertia_factor, cog_factor, social_factor, robot, tol, q_min, q_max)
             pso.num_particles = num_particles;
             pso.num_iterations = num_iterations;
             pso.inertia_factor = inertia_factor;
             pso.cog_factor = cog_factor;
             pso.social_factor = social_factor;
-            pso.joints_limits = joints_limits;
-            pso.verbose = verbose;
+            pso.robot = robot;
+            pso.tol = tol;
+            pso.q_min = q_min;
+            pso.q_max = q_max;
 
-            pso.global_best = {zeros(1, length(pso.joints_limits)), inf};
+            pso.global_best = {zeros(1, length(length(pso.robot.Bodies))), inf};
         end
 
         function pso = initParticles(pso)
             for i = 1:pso.num_particles
-                random_config = generate_r_config(pso.joints_limits);
-                random_velocity = -1 + 1.5*rand(1, length(pso.joints_limits));
+                random_config = generate_r_config(pso.robot);
+                random_velocity = -1 + 1.5*rand(1, length(pso.robot.Bodies));
                 new_particle = Particle(random_config, random_velocity, ...
                     pso.inertia_factor, pso.cog_factor, ...
-                    pso.social_factor, length(pso.joints_limits));
+                    pso.social_factor, pso.q_min, pso.q_max, pso.robot);
                 pso.particles = [pso.particles, new_particle];
             end
         end
 
         function pso = optmProcess(pso)
-            for i = 1:pso.num_iterations
-                if(pso.verbose)
-                    disp(['------------ iteration ', num2str(i), ' ------------']);
-                end
+            i = 0;
+            while i < pso.num_iterations
                 for j = 1:pso.num_particles
                     pso.particles(j) = pso.particles(j).updateVelocity(pso.global_best);
                     pso.particles(j) = pso.particles(j).updatePosition;
@@ -57,12 +59,12 @@ classdef PSO_R
                                             pso.particles(j).fitness};
                     end
                 end
-                
-                if(pso.verbose)
-                    disp(['global best for this iteration (position, fitness) => ', ...
-                    mat2str(pso.global_best{1}, 2), ', ', num2str(pso.global_best{2})]);
+
+                if pso.global_best{2} < pso.tol
+                    break;
+                else
+                    i = i + 1;
                 end
-                
             end
         end
 
